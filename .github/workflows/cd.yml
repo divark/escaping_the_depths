@@ -10,8 +10,6 @@ env:
 name: Continuous Deployment
 jobs:
   deploy:
-    needs: check
-
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
