@@ -48,7 +48,7 @@ jobs:
           echo "GAME_EXECUTABLE_ZIP_NAME=game_${{ runner.os }}.zip" >> $GITHUB_ENV
 
       - name: Zip release for Windows
-        if: ${{ $RUNNER_OS == 'Windows' }}
+        if: ${{ runner.os == 'Windows' }}
         uses: vimtor/action-zip@v1.2
         with:
           files: assets/ target/release/${{ env.GAME_EXECUTABLE_NAME }}.exe
