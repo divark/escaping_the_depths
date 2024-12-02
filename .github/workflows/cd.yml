@@ -43,34 +43,30 @@ jobs:
       - name: Build the project
         run: cargo build --release
 
-      - name: Prepare where to zip release
-        run: |
-          echo "GAME_EXECUTABLE_ZIP_NAME=game_${{ RUNNER_OS }}.zip" >> $GITHUB_ENV
-
       - name: Zip release for Windows
-        if: ${{ RUNNER_OS == 'Windows' }}
+        if: runner.os == 'Windows'
         uses: vimtor/action-zip@v1.2
         with:
           files: assets/ target/release/${{ env.GAME_EXECUTABLE_NAME }}.exe
-          dest: ${{ env.GAME_EXECUTABLE_ZIP_NAME }}
+          dest: ${{ env.GAME_EXECUTABLE_NAME }}_${{ runner.os }}.zip
 
       - name: Zip release for macOS
-        if: ${{ RUNNER_OS == 'macOS' }}
+        if: runner.os == 'macOS'
         uses: vimtor/action-zip@v1.2
         with:
           files: assets/ target/release/${{ env.GAME_EXECUTABLE_NAME }}
-          dest: ${{ env.GAME_EXECUTABLE_ZIP_NAME }}
+          dest: ${{ env.GAME_EXECUTABLE_NAME }}_${{ runner.os }}.zip
 
       - name: Zip release for Linux
-        if: ${{ RUNNER_OS == 'Linux' }}
+        if: runner.os == 'Linux'
         uses: vimtor/action-zip@v1.2
         with:
           files: assets/ target/release/${{ env.GAME_EXECUTABLE_NAME }}
-          dest: ${{ env.GAME_EXECUTABLE_ZIP_NAME }}
+          dest: ${{ env.GAME_EXECUTABLE_NAME }}_${{ runner.os }}.zip
 
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.GAME_EXECUTABLE_ZIP_NAME }}
+          file: ${{ env.GAME_EXECUTABLE_NAME }}_${{ runner.os }}.zip
           overwrite: true
