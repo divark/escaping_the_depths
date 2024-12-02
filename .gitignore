@@ -1,0 +1,8 @@
+/target
+
+# Why are we ignoring what's inside the assets directory by default?
+# Because many artists have different licenses to use their assets,
+# thus just in case, nothing will be uploaded to prevent a license
+# violation.
+assets/*
+!assets/README.md
