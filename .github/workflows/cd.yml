@@ -45,24 +45,24 @@ jobs:
 
       - name: Prepare where to zip release
         run: |
-          echo "GAME_EXECUTABLE_ZIP_NAME=game_${{ runner.os }}.zip" >> $GITHUB_ENV
+          echo "GAME_EXECUTABLE_ZIP_NAME=game_${{ RUNNER_OS }}.zip" >> $GITHUB_ENV
 
       - name: Zip release for Windows
-        if: ${{ runner.os == 'Windows' }}
+        if: ${{ RUNNER_OS == 'Windows' }}
         uses: vimtor/action-zip@v1.2
         with:
           files: assets/ target/release/${{ env.GAME_EXECUTABLE_NAME }}.exe
           dest: ${{ env.GAME_EXECUTABLE_ZIP_NAME }}
 
       - name: Zip release for macOS
-        if: ${{ $RUNNER_OS == 'macOS' }}
+        if: ${{ RUNNER_OS == 'macOS' }}
         uses: vimtor/action-zip@v1.2
         with:
           files: assets/ target/release/${{ env.GAME_EXECUTABLE_NAME }}
           dest: ${{ env.GAME_EXECUTABLE_ZIP_NAME }}
 
       - name: Zip release for Linux
-        if: ${{ $RUNNER_OS == 'Linux' }}
+        if: ${{ RUNNER_OS == 'Linux' }}
         uses: vimtor/action-zip@v1.2
         with:
           files: assets/ target/release/${{ env.GAME_EXECUTABLE_NAME }}
