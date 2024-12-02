@@ -1,0 +1,75 @@
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+env:
+  GAME_EXECUTABLE_NAME: game
+
+name: Continuous Deployment
+jobs:
+  deploy:
+    needs: check
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      # Used the following as reference to install dependencies for Bevy:
+      # https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md#ubuntu
+      - name: Install Bevy Dependencies for Linux
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+              sudo apt update && sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+          fi
+        shell: bash
+
+      - name: Install mold linker when using Linux.
+        uses: rui314/setup-mold@v1
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build the project
+        run: cargo build --release
+
+      - name: Prepare where to zip release
+        run: |
+          echo "GAME_EXECUTABLE_ZIP_NAME=game_${{ RUNNER_OS }}.zip" >> $GITHUB_ENV
+
+      - name: Zip release for Windows
+        if: ${{ $RUNNER_OS == 'Windows' }}
+        uses: vimtor/action-zip@v1.2
+        with:
+          files: assets/ target/release/${{ env.GAME_EXECUTABLE_NAME }}.exe
+          dest: ${{ env.GAME_EXECUTABLE_ZIP_NAME }}
+
+      - name: Zip release for macOS
+        if: ${{ $RUNNER_OS == 'macOS' }}
+        uses: vimtor/action-zip@v1.2
+        with:
+          files: assets/ target/release/${{ env.GAME_EXECUTABLE_NAME }}
+          dest: ${{ env.GAME_EXECUTABLE_ZIP_NAME }}
+
+      - name: Zip release for Linux
+        if: ${{ $RUNNER_OS == 'Linux' }}
+        uses: vimtor/action-zip@v1.2
+        with:
+          files: assets/ target/release/${{ env.GAME_EXECUTABLE_NAME }}
+          dest: ${{ env.GAME_EXECUTABLE_ZIP_NAME }}
+
+      - name: Upload release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.GAME_EXECUTABLE_ZIP_NAME }}
+          overwrite: true
