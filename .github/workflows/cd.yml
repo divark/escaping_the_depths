@@ -69,5 +69,5 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: $${{ github.workspace }}/{{ env.GAME_EXECUTABLE_NAME }}_${{ runner.os }}.zip
+          file: ${{ github.workspace }}/${{ env.GAME_EXECUTABLE_NAME }}_${{ runner.os }}.zip
           overwrite: true
