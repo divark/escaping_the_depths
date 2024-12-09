@@ -9,3 +9,7 @@ bevy = "^0.15"
 [dev-dependencies]
 cucumber = "^0.21"
 futures = "^0.3"
+
+[[test]]
+name = "levels"
+harness = false
