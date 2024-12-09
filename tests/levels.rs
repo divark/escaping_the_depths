@@ -56,14 +56,14 @@ fn when_tile_painted_on_level(test_env: &mut TestEnvironment, x: usize, y: usize
 }
 
 #[then(regex = r"tile ([0-9]+), ([0-9]+), ([0-9]+) should be a ([a-zA-Z]+) tile.")]
-fn verify_tile_is_ground_tile(
+fn verify_tile_is_type_of_tile(
     test_env: &mut TestEnvironment,
-    width: usize,
-    height: usize,
-    depth: usize,
+    x: usize,
+    y: usize,
+    z: usize,
     tile_type: String,
 ) {
-    let tile_coordinates = GridCoordinates::new(width, height, depth);
+    let tile_coordinates = GridCoordinates::new(x, y, z);
 
     let expected_tile_type = SwitchPuzzleTiles::from_str(&tile_type).unwrap();
     let actual_tile_type = test_env.level.get_tile(&tile_coordinates);
